@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NexusCart | Market Basket Recommendation System</title>
+    <meta name="description" content="AI-Powered Market Basket Recommendation Engine & E-Commerce Analytics Platform built with Association Rule Mining (FPGrowth/Apriori).">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <div class="logo-icon"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="logo-text">Nexus<span>Cart</span> <span class="badge-tag">AI Recommender</span></div>
+            </div>
+            
+            <nav class="nav-tabs">
+                <button class="nav-btn active" data-tab="storefront-tab">
+                    <i class="fa-solid fa-store"></i> Storefront & Cart
+                </button>
+                <button class="nav-btn" data-tab="analytics-tab">
+                    <i class="fa-solid fa-chart-pie"></i> Dataset Analytics
+                </button>
+                <button class="nav-btn" data-tab="rules-tab">
+                    <i class="fa-solid fa-network-wired"></i> Association Rules
+                </button>
+                <button class="nav-btn" data-tab="evaluation-tab">
+                    <i class="fa-solid fa-bullseye"></i> Model Accuracy
+                </button>
+            </nav>
+
+            <div class="nav-actions">
+                <button class="cart-trigger-btn" id="cartToggleBtn">
+                    <i class="fa-solid fa-basket-shopping"></i>
+                    <span>Cart</span>
+                    <span class="cart-badge" id="cartCountBadge">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="main-container">
+
+        <!-- ================= TAB 1: STOREFRONT & RECOMMENDER ================= -->
+        <section id="storefront-tab" class="tab-content active">
+            <div class="hero-banner">
+                <div class="hero-content">
+                    <h1>Real-Time Market Basket Intelligence</h1>
+                    <p>Experience real-time cross-selling powered by Association Rule Mining (FPGrowth/Apriori). Select products into your cart to trigger dynamic "Frequently Bought Together" recommendations.</p>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-pill"><i class="fa-solid fa-receipt"></i> <span>18.2K+ Baskets</span></div>
+                    <div class="stat-pill"><i class="fa-solid fa-box-archive"></i> <span>2,980+ Products</span></div>
+                    <div class="stat-pill"><i class="fa-solid fa-bolt"></i> <span>Sub-50ms Inference</span></div>
+                </div>
+            </div>
+
+            <!-- Search & Controls -->
+            <div class="catalog-header">
+                <div class="search-bar">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="catalogSearchInput" placeholder="Search catalog items (e.g. TEACUP, HEART, JUMBO BAG)...">
+                    <button class="btn-clear" id="searchClearBtn"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="quick-preset-tags">
+                    <span class="preset-label">Quick Try Carts:</span>
+                    <button class="preset-btn" data-preset="REGENCY">Teacup Sets</button>
+                    <button class="preset-btn" data-preset="HEART">Heart Decor</button>
+                    <button class="preset-btn" data-preset="JUMBO BAG">Jumbo Bags</button>
+                    <button class="preset-btn" data-preset="CHRISTMAS">Holiday Items</button>
+                </div>
+            </div>
+
+            <div class="storefront-grid-layout">
+                <!-- Products Grid -->
+                <div class="products-section">
+                    <div class="section-title-bar">
+                        <h2><i class="fa-solid fa-grid-2"></i> Catalog Products</h2>
+                        <span class="product-count-label" id="productCountLabel">Showing top products</span>
+                    </div>
+                    <div class="products-grid" id="productsGrid">
+                        <!-- Product Cards rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Live Recommendations Widget Sidebar -->
+                <aside class="recommender-sidebar">
+                    <div class="recommend-card-box">
+                        <div class="rec-header">
+                            <div class="rec-title">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                                <span>Frequently Bought Together</span>
+                            </div>
+                            <span class="rec-badge" id="recBadge">Active Engine</span>
+                        </div>
+
+                        <div class="rec-cart-summary">
+                            <span class="cart-summary-label">Items in Cart:</span>
+                            <div class="cart-tags-container" id="cartTagsContainer">
+                                <span class="empty-cart-text">Cart is empty. Add products to generate co-purchase rules!</span>
+                            </div>
+                        </div>
+
+                        <div class="recommendations-list" id="recommendationsList">
+                            <!-- Recommendations rendered via JS -->
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+
+        <!-- ================= TAB 2: DATASET ANALYTICS ================= -->
+        <section id="analytics-tab" class="tab-content">
+            <div class="page-header">
+                <h2><i class="fa-solid fa-chart-line"></i> Exploratory Data Analysis (EDA)</h2>
+                <p>Comprehensive transaction insights from the Online Retail dataset (18,266 unique transactions & $8.9M total revenue).</p>
+            </div>
+
+            <!-- KPI Metric Cards -->
+            <div class="metrics-grid" id="analyticsMetricsGrid">
+                <div class="metric-card">
+                    <div class="metric-icon blue"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <div class="metric-data">
+                        <span class="metric-value" id="statTransactions">18,266</span>
+                        <span class="metric-label">Total Transactions (Invoices)</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon purple"><i class="fa-solid fa-boxes-stacked"></i></div>
+                    <div class="metric-data">
+                        <span class="metric-value" id="statProducts">2,984</span>
+                        <span class="metric-label">Unique Products</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon green"><i class="fa-solid fa-sack-dollar"></i></div>
+                    <div class="metric-data">
+                        <span class="metric-value" id="statRevenue">$8.91M</span>
+                        <span class="metric-label">Total Revenue Generated</span>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon orange"><i class="fa-solid fa-basket-shopping"></i></div>
+                    <div class="metric-data">
+                        <span class="metric-value" id="statBasketSize">22.8</span>
+                        <span class="metric-label">Avg Basket Size (Items/Cart)</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Visual Charts Gallery -->
+            <div class="charts-gallery">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-fire"></i> Top 10 Most Frequently Purchased Products</h3>
+                    </div>
+                    <div class="chart-body">
+                        <img src="/static/charts/top_frequent_products.png" id="chartImg1" alt="Top Frequent Products" onerror="this.src='https://via.placeholder.com/600x350?text=Chart+Generating...'">
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-chart-column"></i> Basket Size Distribution (Items / Transaction)</h3>
+                    </div>
+                    <div class="chart-body">
+                        <img src="/static/charts/basket_size_distribution.png" id="chartImg2" alt="Basket Size Distribution" onerror="this.src='https://via.placeholder.com/600x350?text=Chart+Generating...'">
+                    </div>
+                </div>
+
+                <div class="chart-card full-width">
+                    <div class="chart-header">
+                        <h3><i class="fa-solid fa-money-bill-trend-up"></i> Top 10 Revenue Generating Products</h3>
+                    </div>
+                    <div class="chart-body">
+                        <img src="/static/charts/top_revenue_products.png" id="chartImg3" alt="Top Revenue Products" onerror="this.src='https://via.placeholder.com/900x400?text=Chart+Generating...'">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ================= TAB 3: ASSOCIATION RULES ================= -->
+        <section id="rules-tab" class="tab-content">
+            <div class="page-header">
+                <h2><i class="fa-solid fa-network-wired"></i> Mined Association Rules Explorer</h2>
+                <p>Filter, search, and rank co-purchase rules derived from market basket pattern mining (Minimum Support &ge; 1.0%, Minimum Lift &ge; 1.2).</p>
+            </div>
+
+            <!-- Rules Filters & Stats -->
+            <div class="rules-filter-bar">
+                <div class="filter-group">
+                    <label for="rulesMinConfidence">Min Confidence:</label>
+                    <input type="number" id="rulesMinConfidence" value="0.20" step="0.05" min="0.05" max="0.95">
+                </div>
+                <div class="filter-group">
+                    <label for="rulesMinLift">Min Lift:</label>
+                    <input type="number" id="rulesMinLift" value="1.2" step="0.1" min="1.0" max="10.0">
+                </div>
+                <button class="btn-primary" id="btnFilterRules"><i class="fa-solid fa-filter"></i> Apply Filters</button>
+            </div>
+
+            <div class="table-container glass-card">
+                <table class="rules-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>If Customer Buys (Antecedent)</th>
+                            <th></th>
+                            <th>Also Recommend (Consequent)</th>
+                            <th>Support</th>
+                            <th>Confidence</th>
+                            <th>Lift</th>
+                            <th>Composite Score</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rulesTableBody">
+                        <tr><td colspan="8" class="loading-cell"><i class="fa-solid fa-spinner fa-spin"></i> Loading mined association rules...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+
+        <!-- ================= TAB 4: MODEL ACCURACY ================= -->
+        <section id="evaluation-tab" class="tab-content">
+            <div class="page-header">
+                <h2><i class="fa-solid fa-bullseye"></i> Offline Model Evaluation & Holdout Validation</h2>
+                <p>Quantitative validation metrics evaluated using an 80/20 temporal-random holdout basket test split.</p>
+            </div>
+
+            <div class="evaluation-grid">
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <i class="fa-solid fa-bullseye-pointer"></i>
+                        <h3>Hit Rate @ Top 5 Recommendations</h3>
+                    </div>
+                    <div class="eval-big-number" id="evalHitRate">54.3%</div>
+                    <p class="eval-desc">In 54.3% of holdout customer baskets, the model's top 5 predictions successfully anticipated co-purchased items.</p>
+                </div>
+
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <i class="fa-solid fa-crosshair"></i>
+                        <h3>Mean Precision @ Top 5</h3>
+                    </div>
+                    <div class="eval-big-number" id="evalPrecision">35.8%</div>
+                    <p class="eval-desc">Average ratio of recommended items that matched actual ground truth co-purchased items in test transactions.</p>
+                </div>
+
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <i class="fa-solid fa-globe"></i>
+                        <h3>Catalog Coverage</h3>
+                    </div>
+                    <div class="eval-big-number" id="evalCoverage">16.3%</div>
+                    <p class="eval-desc">Percentage of total catalog items actively connected into statistical co-purchase rule networks.</p>
+                </div>
+
+                <div class="eval-card">
+                    <div class="eval-header">
+                        <i class="fa-solid fa-rocket"></i>
+                        <h3>Average Rule Lift Ratio</h3>
+                    </div>
+                    <div class="eval-big-number" id="evalAvgLift">12.01x</div>
+                    <p class="eval-desc">Co-occurrence probability is 12x higher than independent random chance across mined association patterns.</p>
+                </div>
+            </div>
+
+            <div class="eval-detail-box glass-card">
+                <h3><i class="fa-solid fa-vial"></i> Holdout Validation Methodology</h3>
+                <ul class="methodology-list">
+                    <li><i class="fa-solid fa-check"></i> <strong>Dataset Split:</strong> 18,266 transaction baskets split into 14,612 Train Baskets (80%) and 3,654 Test Baskets (20%).</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Simulation Protocol:</strong> For each test basket (size &ge; 2), 1 item is masked as user input query while remaining basket items serve as hidden ground truth.</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Strict Separation:</strong> Association rules mined strictly on training transactions to prevent data leakage.</li>
+                    <li><i class="fa-solid fa-check"></i> <strong>Cold-start Strategy:</strong> Graceful fallback to global top-frequency items when no rule matches novel item combinations.</li>
+                </ul>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Slide-out Shopping Cart Drawer -->
+    <div class="cart-drawer-overlay" id="cartOverlay"></div>
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-drawer-header">
+            <h3><i class="fa-solid fa-basket-shopping"></i> Shopping Cart</h3>
+            <button class="close-drawer-btn" id="closeCartBtn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <div class="cart-drawer-body" id="cartDrawerBody">
+            <div class="empty-cart-state">
+                <i class="fa-solid fa-cart-flatbed-suitcase"></i>
+                <p>Your shopping cart is empty.</p>
+            </div>
+        </div>
+
+        <div class="cart-drawer-footer">
+            <div class="cart-total-row">
+                <span>Items in Cart:</span>
+                <strong id="cartDrawerItemCount">0</strong>
+            </div>
+            <button class="btn-clear-cart" id="btnClearCart"><i class="fa-solid fa-trash-can"></i> Clear Cart</button>
+        </div>
+    </div>
+
+    <!-- Rule Explanation Modal -->
+    <div class="modal-overlay" id="ruleModalOverlay">
+        <div class="modal-card glass-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-circle-info"></i> Recommendation Insights</h3>
+                <button class="close-modal-btn" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Modal content dynamically injected -->
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
